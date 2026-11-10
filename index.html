@@ -1,514 +1,107 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Библиотека лидера — Гадагатель Донат</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Профсоюзный маршрут — игра</title>
 <style>
-  :root{
-    --paper:#F2E8D5;
-    --paper-dark:#E7D9BB;
-    --ink:#3A2A1C;
-    --ink-soft:#5B4632;
-    --red:#7A1F1F;
-    --red-dark:#5C1616;
-    --green:#1F3A2E;
-    --brass:#C9A66B;
-    --brass-light:#E3C68C;
-    --card:#FFFDF8;
-    --shadow: rgba(58,42,28,0.35);
-  }
-
-  *{box-sizing:border-box; margin:0; padding:0;}
-
-  html{scroll-behavior:smooth;}
-
-  body{
-    background:
-      radial-gradient(ellipse at top, rgba(201,166,107,0.10), transparent 60%),
-      var(--paper);
-    color:var(--ink);
-    font-family:'PT Serif', serif;
-    line-height:1.6;
-    overflow-x:hidden;
-  }
-
-  body::before{
-    content:"";
-    position:fixed; inset:0;
-    pointer-events:none;
-    z-index:1;
-    opacity:0.5;
-    background-image:
-      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(58,42,28,0.012) 3px),
-      repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(58,42,28,0.012) 3px);
-  }
-
-  .wrap{position:relative; z-index:2; max-width:980px; margin:0 auto; padding:0 28px;}
-
-  /* ---------- HEADER / TICKET ---------- */
-  .topbar{
-    position:sticky; top:0; z-index:50;
-    background:linear-gradient(180deg, var(--ink) 0%, #2c2014 100%);
-    border-bottom:3px double var(--brass);
-    color:var(--paper);
-  }
-  .topbar-inner{
-    max-width:980px; margin:0 auto; padding:14px 28px;
-    display:flex; align-items:center; justify-content:space-between; gap:16px;
-    flex-wrap:wrap;
-  }
-  .ticket-title{
-    font-family:'Playfair Display', serif;
-    font-weight:700; font-size:1.05rem; letter-spacing:0.02em;
-  }
-  .ticket-title small{
-    display:block; font-family:'JetBrains Mono', monospace;
-    font-size:0.62rem; letter-spacing:0.15em; color:var(--brass-light);
-    text-transform:uppercase; margin-top:2px;
-  }
-  .topbar-mark{
-    display:flex; align-items:center; gap:9px;
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase;
-    color:var(--brass-light);
-  }
-  .mark-dot{
-    width:9px; height:9px; border-radius:50%;
-    background:var(--red);
-    box-shadow:0 0 0 3px rgba(122,31,31,0.25), 0 0 0 1px var(--brass);
-    flex-shrink:0;
-  }
-
-  /* ---------- HERO ---------- */
-  .hero{
-    padding:64px 0 40px;
-    text-align:center;
-    position:relative;
-  }
-  .eyebrow{
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.72rem; letter-spacing:0.25em; text-transform:uppercase;
-    color:var(--red); margin-bottom:18px; display:inline-block;
-    border-top:1px solid var(--brass); border-bottom:1px solid var(--brass);
-    padding:6px 16px;
-  }
-  .hero h1{
-    font-family:'Playfair Display', serif;
-    font-weight:800; font-size:clamp(2.3rem, 6vw, 4rem);
-    line-height:1.08; color:var(--ink);
-    margin-bottom:14px;
-  }
-  .hero h1 em{
-    font-style:italic; color:var(--red); font-weight:700;
-  }
-  .hero p.sub{
-    max-width:560px; margin:0 auto; font-size:1.05rem; color:var(--ink-soft);
-  }
-  .hero .byline{
-    margin-top:22px; font-family:'JetBrains Mono', monospace;
-    font-size:0.78rem; letter-spacing:0.06em; color:var(--ink-soft);
-  }
-
-  /* ---------- READING ROOM (decorative wrapper around the game) ---------- */
-  .reading-room{
-    position:relative;
-    padding:46px 38px 50px;
-    margin:24px 0 40px;
-    background:
-      radial-gradient(ellipse at top, rgba(201,166,107,0.12), transparent 65%),
-      var(--card);
-    border:1px solid #d8c69e;
-    border-radius:4px;
-    box-shadow:
-      0 30px 60px -28px var(--shadow),
-      inset 0 0 0 1px rgba(201,166,107,0.18);
-  }
-  @media (max-width:640px){
-    .reading-room{padding:36px 20px 40px;}
-  }
-
-  .reading-room-deco{position:absolute; inset:0; pointer-events:none;}
-  .reading-room-deco .corner{
-    position:absolute; width:30px; height:30px;
-    border:2px solid var(--brass);
-    opacity:0.55;
-  }
-  .corner.tl{top:14px; left:14px; border-right:none; border-bottom:none;}
-  .corner.tr{top:14px; right:14px; border-left:none; border-bottom:none;}
-  .corner.bl{bottom:14px; left:14px; border-right:none; border-top:none;}
-  .corner.br{bottom:14px; right:14px; border-left:none; border-top:none;}
-
-  .room-eyebrow{
-    text-align:center; font-family:'JetBrains Mono', monospace;
-    font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase;
-    color:var(--red); margin-bottom:32px;
-  }
-  .game-frame{max-width:720px; margin:0 auto;}
-
-  .room-footnote{
-    margin-top:40px; text-align:center;
-  }
-  .footnote-line{
-    display:block; width:120px; height:1px; margin:0 auto 16px;
-    background:repeating-linear-gradient(90deg, var(--brass) 0 6px, transparent 6px 11px);
-    opacity:0.8;
-  }
-  .room-footnote p{
-    font-family:'Playfair Display', serif; font-style:italic; font-weight:600;
-    font-size:1.08rem; color:var(--red); max-width:480px; margin:0 auto;
-  }
-
-  footer{
-    text-align:center; padding:22px 0 36px;
-    font-family:'JetBrains Mono', monospace; font-size:0.68rem;
-    color:var(--ink-soft); letter-spacing:0.05em;
-  }
-
-  /* ---------- GAME: catch the bookworm ---------- */
-  .game-intro{
-    text-align:center; font-family:'JetBrains Mono', monospace;
-    font-size:0.74rem; color:var(--ink-soft); letter-spacing:0.04em;
-    margin-bottom:26px;
-  }
-  .game-card{
-    background:linear-gradient(var(--card), var(--card)) padding-box;
-    border:1px solid #d8c69e;
-    border-radius:2px;
-    padding:28px 28px 30px;
-    position:relative;
-    box-shadow:
-      0 18px 40px -14px var(--shadow),
-      0 2px 4px rgba(0,0,0,0.08);
-  }
-  .game-head{
-    display:flex; justify-content:space-between; align-items:flex-start;
-    gap:16px; margin-bottom:18px; padding-bottom:16px;
-    border-bottom:1px dashed #cdb98a;
-    flex-wrap:wrap;
-  }
-  .game-head .code{
-    font-family:'JetBrains Mono', monospace; font-size:0.68rem;
-    color:var(--red); letter-spacing:0.1em; text-transform:uppercase;
-    display:block; margin-bottom:6px;
-  }
-  .game-head h2{
-    font-family:'Playfair Display', serif; font-weight:700;
-    font-size:clamp(1.3rem, 3vw, 1.7rem); color:var(--ink);
-  }
-  .game-stats{
-    flex-shrink:0; display:flex; gap:18px;
-    font-family:'JetBrains Mono', monospace;
-    font-size:0.78rem; color:var(--ink-soft);
-    padding-top:4px;
-  }
-  .game-stats b{color:var(--red); font-size:0.95rem;}
-
-  .game-board{
-    position:relative;
-    width:100%;
-    height:320px;
-    background:
-      repeating-linear-gradient(180deg, var(--paper-dark) 0 54px, #e0d2ae 54px 58px);
-    border:1px solid #d8c69e;
-    border-radius:3px;
-    overflow:hidden;
-    box-shadow:inset 0 2px 6px rgba(58,42,28,0.15);
-    cursor:default;
-  }
-  .game-board.idle{display:flex; align-items:center; justify-content:center;}
-
-  .bookworm{
-    position:absolute;
-    width:42px; height:42px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:1.6rem;
-    background:none; border:none; padding:0; margin:0;
-    cursor:pointer;
-    filter:drop-shadow(0 3px 3px rgba(58,42,28,0.35));
-    animation:wormIn .25s cubic-bezier(.34,1.56,.64,1);
-    line-height:1;
-  }
-  .bookworm:focus-visible{outline:3px solid var(--brass); outline-offset:3px; border-radius:50%;}
-  @keyframes wormIn{
-    from{transform:scale(0.3) rotate(-15deg); opacity:0;}
-    to{transform:scale(1) rotate(0deg); opacity:1;}
-  }
-  .bookworm.squashed{
-    animation:wormSquash .3s ease forwards;
-    pointer-events:none;
-  }
-  @keyframes wormSquash{
-    0%{transform:scale(1);}
-    40%{transform:scale(1.3) rotate(10deg);}
-    100%{transform:scale(0) rotate(25deg); opacity:0;}
-  }
-  .game-board.idle .start-prompt{
-    text-align:center;
-  }
-  .start-prompt .big-emoji{font-size:2.4rem; display:block; margin-bottom:10px;}
-  .start-prompt p{
-    font-family:'JetBrains Mono', monospace; font-size:0.8rem;
-    color:var(--ink-soft); margin-bottom:16px;
-  }
-
-  .game-start-btn, .game-replay{
-    font-family:'JetBrains Mono', monospace; font-size:0.76rem;
-    letter-spacing:0.05em; text-transform:uppercase;
-    background:var(--green); color:var(--paper);
-    border:none; padding:12px 22px; border-radius:3px; cursor:pointer;
-    transition:transform .2s, background .2s;
-  }
-  .game-start-btn:hover, .game-replay:hover{background:var(--red); transform:translateY(-2px);}
-  .game-start-btn:focus-visible, .game-replay:focus-visible{outline:3px solid var(--brass); outline-offset:2px;}
-
-  .game-result{
-    text-align:center; padding:6px 0 2px;
-  }
-  .game-result .seal-mini{
-    width:84px; height:84px; border-radius:50%;
-    border:3px double var(--red);
-    display:flex; align-items:center; justify-content:center;
-    margin:6px auto 20px;
-    font-family:'JetBrains Mono', monospace; font-weight:700;
-    color:var(--red); text-align:center; line-height:1.2;
-    transform:rotate(-6deg);
-  }
-  .game-result .seal-mini span{display:block; font-size:1.4rem;}
-  .game-result .seal-mini small{display:block; font-size:0.56rem; letter-spacing:0.08em; margin-top:2px;}
-  .game-result h3{
-    font-family:'Playfair Display', serif; font-weight:700;
-    font-size:1.3rem; margin-bottom:10px; color:var(--ink);
-  }
-  .game-result p{color:var(--ink-soft); max-width:440px; margin:0 auto 18px; font-size:0.98rem;}
-
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
-  }
-</style>
-</head>
-<body>
-
-<div class="topbar">
-  <div class="topbar-inner">
-    <div class="ticket-title">
-      Читательский билет № 1
-      <small>Гадагатель Донат · АГУ</small>
-    </div>
-    <div class="topbar-mark" aria-hidden="true">
-      <span class="mark-dot"></span>
-      <span class="mark-text">Картотечный зал</span>
-    </div>
-  </div>
-</div>
-
-<div class="wrap">
-
-  <section class="hero">
-    <span class="eyebrow">Профком АГУ · Выступление конкурсанта</span>
-    <h1>Библиотека <em>лидера</em></h1>
-    <p class="sub">Том первый. Истории, которые здесь хранятся, написаны не для пыльных полок — а чтобы их читали, листали и иногда, как в этом зале, защищали от книжной моли.</p>
-    <p class="byline">Гадагатель Донат · факультет адыгейской филологии и культуры · АГУ</p>
-  </section>
-
-  <section class="reading-room">
-    <div class="reading-room-deco" aria-hidden="true">
-      <span class="corner tl"></span>
-      <span class="corner tr"></span>
-      <span class="corner bl"></span>
-      <span class="corner br"></span>
-    </div>
-
-    <p class="room-eyebrow">Картотечный зал · Зона отдыха читателя</p>
-
-    <div class="game-frame">
-      <p class="game-intro">Ловите книжных молей →</p>
-      <div class="game-card" id="gameCard">
-        <!-- game content injected by JS -->
-      </div>
-    </div>
-
-    <div class="room-footnote">
-      <span class="footnote-line"></span>
-      <p>«Лучший хранитель библиотеки — тот, кто и за порядком следит, и моли спуску не даёт.»</p>
-      <span class="footnote-line"></span>
-    </div>
-  </section>
-
-</div>
-
-<footer>Спасибо за внимание · Гадагатель Донат · АГУ, 2026</footer>
-
-<script>
-/* ---------- GAME: catch the bookworm ---------- */
-const gameCard = document.getElementById('gameCard');
-const GAME_DURATION = 30; 
-const WORM_LIFETIME = 1400; 
-
-const WORM_EMOJIS = ['📖', '<img src="mol.png" style="width: 70px; height: 70px; object-fit: contain; pointer-events: none;">'];
+:root{--navy:#17364c;--wine:#7c2d43;--gold:#e5b957;--cream:#fff4d9;--paper:#f9edd2;--ink:#243746;--muted:#6d777b;--green:#367457;--red:#a93f4a}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);font-family:Arial,sans-serif;background-color:#e7d6b4;background-image:radial-gradient(#c6b18a 1px,transparent 1px);background-size:18px 18px}
+main{max-width:1120px;margin:auto;padding:24px 16px 42px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--wine);font-weight:800;font-size:12px;letter-spacing:.09em;text-transform:uppercase}
+.seal{display:inline-grid;place-items:center;background:var(--navy);color:var(--gold);border:3px solid var(--gold);border-radius:50%;width:42px;height:42px;margin-right:8px;box-shadow:0 4px 0 #102638}
+h1{font-family:Georgia,serif;font-size:clamp(34px,6vw,62px);line-height:.98;color:var(--navy);margin:25px 0 12px;max-width:850px}
+.sub{font:16px/1.65 Arial,sans-serif;color:#4d5d62;max-width:730px}
+.board{position:relative;overflow:hidden;margin:28px 0;padding:clamp(16px,3vw,32px);border:5px solid #8c6234;border-radius:24px;background-color:#4d876c;background-image:linear-gradient(45deg,rgba(255,255,255,.055) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.055) 75%),linear-gradient(45deg,rgba(255,255,255,.055) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.055) 75%);background-position:0 0,12px 12px;background-size:24px 24px;box-shadow:inset 0 0 0 4px #c99a52,inset 0 0 0 8px #315f4a,0 12px 0 #9c7748,0 17px 24px #6e573a55}
+.board:before{content:"ПРОФСОЮЗНЫЙ МАРШРУТ";position:absolute;top:12px;left:50%;transform:translateX(-50%);color:#f8e4ad;font-size:10px;font-weight:900;letter-spacing:.22em;white-space:nowrap;opacity:.9}
+.path{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(7px,1.5vw,18px);position:relative;padding:26px 4px 8px}
+.path:before{content:"";position:absolute;top:calc(50% + 2px);left:7%;right:7%;border-top:7px dotted #f5d58a;filter:drop-shadow(0 2px 0 #76502c)}
+.tile{position:relative;z-index:1;min-height:135px;border:3px solid #d8a84e;border-radius:17px;background:linear-gradient(145deg,#fff9e9,#ead8ad);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;color:var(--navy);box-shadow:0 7px 0 #9e713b,0 10px 12px #18372966;cursor:pointer;transition:transform .18s,box-shadow .18s}
+.tile:after{content:"";position:absolute;inset:5px;border:1px dashed #d3b16e;border-radius:10px;pointer-events:none}
+.tile:hover{transform:translateY(-4px);box-shadow:0 11px 0 #9e713b,0 14px 16px #18372966}
+.num{position:relative;z-index:1;display:grid;place-items:center;width:43px;height:43px;border-radius:50%;background:linear-gradient(145deg,#244e68,#102d43);border:3px solid #e9bd5e;color:white;font:bold 18px Arial;box-shadow:0 4px 0 #0c2232}
+.tile small{position:relative;z-index:1;font:900 10px Arial;text-transform:uppercase;letter-spacing:.08em}
+.tile.active{background:linear-gradient(145deg,#fff8dc,#f5c96a);transform:translateY(-7px) rotate(-1deg);box-shadow:0 12px 0 #8e5b2c,0 15px 18px #18372977}
+.tile.done{background:linear-gradient(145deg,#f1ffe9,#b9d8b5)}
+.tile.done .num{background:linear-gradient(145deg,#438b61,#20573d)}
+.pawn{position:absolute;z-index:3;top:-23px;left:50%;transform:translateX(-50%);font-size:34px;line-height:1;filter:drop-shadow(0 4px 1px #18372988);animation:bob 1.5s ease-in-out infinite}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -4px}}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0}
+.stat{background:linear-gradient(145deg,#214b65,#102e43);color:white;border:2px solid var(--gold);border-radius:14px;padding:11px 16px;font:14px Arial;box-shadow:0 4px 0 #0b2231}
+.stat strong{color:#ffdc7a;font-size:22px}
+.game{display:grid;grid-template-columns:1.4fr .8fr;gap:18px;align-items:start}
+.card{background:linear-gradient(145deg,#fffaf0,#f4e7ca);border:3px solid
 
 
-let gameRunning = false;
-let gameScore = 0;
-let gameMisses = 0;
-let gameTimeLeft = GAME_DURATION;
-let spawnTimer = null;
-let countdownTimer = null;
-let activeWorms = new Set();
-
-function renderIdle(){
-  gameRunning = false;
-  clearTimers();
-
-  const previewItem = WORM_EMOJIS[Math.floor(Math.random() * WORM_EMOJIS.length)];
-
-  gameCard.innerHTML = `
-    <div class="game-head">
-      <div>
-        <span class="code">Картотека · Переменка</span>
-        <h2>Поймай книжного моля</h2>
-      </div>
-    </div>
-    <div class="game-board idle" id="gameBoard">
-      <div class="start-prompt">
-        <span class="big-emoji"><img src="mol.png" style="width: 100px; height: 100px; object-fit: contain; pointer-events: none;"></span>
-        <p>Моли расползлись по полкам — успей прихлопнуть как можно больше за ${GAME_DURATION} секунд!</p>
-        <button class="game-start-btn" id="gameStartBtn">Начать игру ▶️</button>
-      </div>
-    </div>
-  `;
-  document.getElementById('gameStartBtn').addEventListener('click', startGame);
-}
-
-function clearTimers(){
-  if(spawnTimer){ clearInterval(spawnTimer); spawnTimer = null; }
-  if(countdownTimer){ clearInterval(countdownTimer); countdownTimer = null; }
-  activeWorms.forEach(w => { if(w.timeout) clearTimeout(w.timeout); });
-  activeWorms.clear();
-}
-
-function startGame(){
-  gameRunning = true;
-  gameScore = 0;
-  gameMisses = 0;
-  gameTimeLeft = GAME_DURATION;
-  activeWorms.clear();
-
-  gameCard.innerHTML = `
-    <div class="game-head">
-      <div>
-        <span class="code">Картотека · Переменка</span>
-        <h2>Поймай книжного моля</h2>
-      </div>
-      <div class="game-stats">
-        <span>Поймано: <b id="scoreNum">0</b></span>
-        <span>Осталось: <b id="timeNum">${gameTimeLeft}</b> с</span>
-      </div>
-    </div>
-    <div class="game-board" id="gameBoard"></div>
-  `;
-
-  countdownTimer = setInterval(() => {
-    gameTimeLeft--;
-    const t = document.getElementById('timeNum');
-    if(t) t.textContent = gameTimeLeft;
-    if(gameTimeLeft <= 0){
-      endGame();
-    }
-  }, 1000);
-
-  spawnTimer = setInterval(spawnWorm, 750);
-  spawnWorm();
-}
-
-function spawnWorm(){
-  if(!gameRunning) return;
-  const board = document.getElementById('gameBoard');
-  if(!board) return;
-
-  const boardRect = { w: board.clientWidth, h: board.clientHeight };
-  const size = 42;
-  const x = Math.random() * Math.max(boardRect.w - size, 10);
-  const y = Math.random() * Math.max(boardRect.h - size, 10);
-
-  const worm = document.createElement('button');
-  worm.className = 'bookworm';
-  worm.style.left = x + 'px';
-  worm.style.top = y + 'px';
-  worm.setAttribute('aria-label', 'Поймать моля');
-  worm.innerHTML = WORM_EMOJIS[Math.floor(Math.random() * WORM_EMOJIS.length)];
-
-  const record = { el: worm, timeout: null };
-
-  worm.addEventListener('click', () => catchWorm(record));
-
-  record.timeout = setTimeout(() => {
-    if(activeWorms.has(record) && worm.isConnected){
-      worm.remove();
-      activeWorms.delete(record);
-    }
-  }, WORM_LIFETIME);
-
-  activeWorms.add(record);
-  board.appendChild(worm);
-}
-
-function catchWorm(record){
-  if(!gameRunning) return;
-
-  
-  const hasImage = record.el.querySelector('img');
-  if (!hasImage) {
-    
-    if(record.timeout) clearTimeout(record.timeout);
-    activeWorms.delete(record);
-    if(record.el.isConnected) record.el.remove();
-    return;
-  }
-  
-  if(record.timeout) clearTimeout(record.timeout);
-  activeWorms.delete(record);
-  gameScore++;
-  const s = document.getElementById('scoreNum');
-  if(s) s.textContent = gameScore;
-
-  record.el.classList.add('squashed');
-  record.el.disabled = true;
-  setTimeout(() => { if(record.el.isConnected) record.el.remove(); }, 320);
-}
-
-function endGame(){
-  gameRunning = false;
-  clearTimers();
-
-  let title, msg;
-  if(gameScore >= 15){
-    title = 'Гроза библиотечной моли';
-    msg = 'Невероятная скорость реакции! Полки в полной безопасности.';
-  } else if(gameScore >= 10){
-    title = 'Бдительный читатель';
-    msg = 'Хороший результат — большинство молей не ушли от расплаты.';
-  } else {
-    title = 'Стажёр архива';
-    msg = 'Неплохое начало! Попробуйте ещё раз и побейте свой счёт.';
-  }
-
-  gameCard.innerHTML = `
-    <div class="game-result">
-      <div class="seal-mini"><span>${gameScore}</span><small>поймано молей</small></div>
-      <h3>${title}</h3>
-      <p>${msg}</p>
-      <button class="game-replay" id="gameReplayBtn">Сыграть ещё раз ↻</button>
-    </div>
-  `;
-  document.getElementById('gameReplayBtn').addEventListener('click', startGame);
-}
-
-renderIdle();
-
-</script>
-
-</body>
-</html>
+#c69a50;border-radius:20px;padding:clamp(18px,3vw,28px);box-shadow:0 7px 0 #b9a17a,0 12px 18px #5b493022}
+.kick{font:900 11px Arial;color:var(--wine);letter-spacing:.14em;text-transform:uppercase}
+h2{font-family:Georgia,serif;font-size:clamp(25px,3vw,35px);color:var(--navy);line-height:1.1;margin:10px 0}
+.prompt{font:18px/1.5 Arial;margin:18px 0}
+.answers{display:grid;gap:11px}.emblem{display:inline-grid;width:72px;height:72px;place-items:center;flex-shrink:0}.emblem svg{width:70px;height:70px}.answer:has(.emblem){display:flex;align-items:center;gap:14px}.answer small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.answer{border:2px solid #ddc79a;border-radius:13px;background:#fffdf6;padding:14px;text-align:left;font:15px/1.4 Arial;color:var(--ink);cursor:pointer;box-shadow:0 3px 0 #e0cfaa;transition:transform .15s,border-color .15s}
+.answer:hover:not(:disabled){transform:translateY(-2px);border-color:#c69a50}
+.answer.correct{background:#e3efe4;border-color:var(--green);box-shadow:0 3px 0 #a4c4a8}
+.answer.wrong{background:#f5e1df;border-color:var(--red)}
+.answer:disabled{cursor:default}
+.feedback{min-height:45px;font:14px/1.5 Arial;color:var(--muted);margin-top:15px}
+.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:12px}
+.btn{border:0;border-radius:12px;padding:14px 17px;background:linear-gradient(145deg,#8e354c,#642137);color:white;font:bold 14px Arial;cursor:pointer;box-shadow:0 5px 0 #481628}
+.btn.secondary{background:linear-gradient(145deg,#244e68,#102d43);box-shadow:0 5px 0 #0b2231}
+.btn:disabled{opacity:.4;cursor:default}
+.side h3{font-family:Georgia,serif;font-size:24px;color:var(--navy);margin:8px 0}
+.side p{font:14px/1.6 Arial;color:var(--muted)}
+.stars{font-size:28px;letter-spacing:3px;color:#d9cdb5;margin:12px 0}
+.lit{color:#d19b2e;text-shadow:0 1px 0 #8c6321}
+.mission{background:linear-gradient(145deg,#214b65,#102e43);color:white;border:2px solid var(--gold);border-radius:15px;padding:16px;margin-top:18px;font:14px/1.6 Arial;box-shadow:0 4px 0 #0b2231}
+.mission b{color:#ffdc7a}
+.qrbox{margin-top:18px;padding:14px;border:2px dashed #c69a50;border-radius:14px;background:#f0e2c2;text-align:center}
+.qrbox input{width:100%;padding:11px;border:1px solid #cdbb9a;border-radius:8px;margin:8px 0;font:13px Arial}
+.qrbox img{width:150px;height:150px;display:block;margin:12px auto}
+.note{font:12px/1.5 Arial;color:var(--muted)}
+.end{display:none;text-align:center}
+.end .big{font-size:60px}
+footer{text-align:center;margin-top:30px;font:12px Arial;color:#52645a}
+max-width:760px{main{padding:18px 12px 34px}.game{grid-template-columns:1fr}.path{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding-top:29px}.tile{min-height:105px;border-width:2px;border-radius:12px}.num{width:34px;height:34px;font-size:15px}.tile small{font-size:8px;letter-spacing:0}.pawn{font-size:27px;top:-21px}.board{padding:14px 8px 12px;border-width:4px}.path:before{border-top-width:5px}.top{font-size:10px}.seal{width:34px;height:34px}.sub{font-size:15px}}
+max-width:390px{.tile{min-height:91px}.num{width:29px;height:29px}.tile small{font-size:7px}.pawn{font-size:23px}}
+</style></head><body><main>
+<div class="top"><div><span class="seal">✦</span>Профсоюзный маршрут · настольная игра</div><div>20 вопросов · 20 звёзд</div></div>
+<h1>Проверь, что ты знаешь
+о профсоюзной команде!</h1><div class="sub">Проходи уровни, выбирай правильные ответы и собирай звёзды. За каждый правильный ответ — одна звезда. Дойди до финиша!</div>
+<section class="board" aria-label="Игровое поле"><div class="path">
+<button class="tile active" data-l="0"><span class="pawn" aria-hidden="true">♟️</span><span class="num">1</span><small>Старт</small></button><button class="tile" data-l="1"><span class="num">2</span><small>Вопрос</small></button><button class="tile" data-l="2"><span class="num">3</span><small>Вопрос</small></button><button class="tile" data-l="3"><span class="num">4</span><small>Вопрос</small></button><button class="tile" data-l="4"><span class="num">5</span><small>Вопрос</small></button><button class="tile" data-l="5"><span
+class="num">6</span><small>Вопрос</small></button><button class="tile" data-l="6"><span class="num">7</span><small>Вопрос</small></button><button class="tile" data-l="7"><span class="num">8</span><small>Вопрос</small></button><button class="tile" data-l="8"><span class="num">9</span><small>Вопрос</small></button><button class="tile" data-l="9"><span class="num">10</span><small>Вопрос</small></button><button class="tile" data-l="10"><span class="num">11</span><small>Вопрос</small></button><button class="tile" data-l="11"><span class="num">12</span><small>Вопрос</small></button><button class="tile" data-l="12"><span class="num">13</span><small>Вопрос</small></button><button class="tile" data-l="13"><span class="num">14</span><small>Вопрос</small></button><button class="tile" data-l="14"><span class="num">15</span><small>Вопрос</small></button><button class="tile" data-l="15"><span class="num">16</span><small>Вопрос</small></button><button class="tile" data-l="16"><span class="num">17</span><small>Вопрос</small></button><button class="tile" data-l="17"><span class="num">18</span><small>Вопрос</small></button><button class="tile" data-l="18"><span class="num">19</span><small>Вопрос</small></button><button class="tile" data-l="19"><span class="num">20</span><small>Финиш</small></button>
+</div></section>
+<div class="stats"><div class="stat"><strong id="score">0</strong> ★</div><div class="stat"><strong id="progress">0/20</strong> вопросов пройдено</div></div>
+<div class="game" id="game"><section class="card"><div class="kick" id="kick"></div><h2 id="title"></h2><div class="prompt" id="prompt"></div><div class="answers" id="answers"></div><div class="feedback" id="feedback">Выбери один ответ. За правильный начисляется звезда.</div><div class="actions"><button class="btn" id="next" disabled>Следующий уровень →</button><button class="btn secondary" id="reset">Начать заново</button></div></section>
+<aside class="card side"><div class="kick">Твоя коллекция</div><h3>Звёзды игрока</h3><div class="stars" id="stars">☆ ☆ ☆ ☆ ☆</div><p>Каждый правильный ответ открывает следующую клетку маршрута. Собери все 20 звёзд!</p><div class="mission"><b>Твоя миссия</b>
+Узнать больше о профсоюзных лидерах и дойти до финиша.</div><div class="qrbox"><div class="kick">Поделиться игрой</div><p class="note">Опубликуй сайт в интернете, затем вставь сюда публичную ссылку, чтобы создать QR-код.</p><input id="url" placeholder="https://ссылка-на-игру"><button class="btn secondary" id="qrbtn" style="width:100%">Создать QR-код</button><img id="qr" hidden alt="QR-код"><div class="note" id="qrnote">Для создания QR-кода нужен интернет.</div></div></aside></div>
+<section class="card end" id="end"><div class="big">🏆</div><div class="kick">Маршрут пройден</div><h2>Ты дошёл(ла) до финиша!</h2><p id="result"></p><div class="stars" id="endstars"></div><button class="btn" id="again">Сыграть ещё раз</button></section><footer>Играй честно, поддерживай команду и защищай права!</footer>
+</main><script>
+const Q=[
+["Сколько лет на данный момент СКС?","Выбери правильный ответ.","27",["25 лет","26 лет","27 лет","28 лет"]],
+["Когда празднуется День студента?","Выбери дату праздника.","25 января",["17 ноября","25 января","1 сентября","8 марта"]],
+["С какого возраста лицо может вступить в Профсоюз?","Выбери минимальный возраст.","14 лет",["14 лет","16 лет","18 лет","21 год"]],
+["Сколько федеральных округов в РФ?","Выбери правильное количество.","8",["7","8","9","10"]],
+["Сколько существует субъектов в РФ?","Выбери правильное количество согласно материалам игры.","89",["еще 85","87","89","92"]],
+["Годом чего был объявлен 2026 в России?","Выбери тему года в России.","Годом единства народов России",["Годом семьи","Годом единства народов России","Годом добровольца","Годом науки"]],
+["Годом чего был объявлен 2026 в Профсоюзе?","Выбери тему года в Профсоюзе.","Годом трудового единства и солидарности",["Годом наставничества","Годом трудового единства и солидарности","Годом молодежи","Годом профобразования"]],
+["В какой стране зародилось профсоюзное движение?","Выбери страну.","Англия",["Франция","Германия","Англия","Италия"]],
+["Какой орган принял Конституцию РФ?","Выбери правильный ответ.","Всенародным голосованием (референдумом)",["Государственной Думой","Советом Федерации","Всенародным голосованием (референдумом)","Конституционным судом"]],
+["Когда была принята Конституция РФ?","Выбери дату принятия.","12 декабря 1993",["12 июня 1991","12 декабря 1993","4 ноября 1993","25 декабря 1991"]],
+["ФИО председателя СКС в ЮФО","Выбери правильное ФИО.","Хвостов Антон Геннадьевич",["Хвостов Антон Геннадьевич","Коновалова Лидия Аслановна","Кошкин Сергей Владимирович","Хагур Амина Алиевна"]],
+["Как выглядит эмблема СКС?","Выбери правильную эмблему. Это временные макеты — позже замени их своими изображениями.","Эмблема 1",["Эмблема 1","Эмблема 2","Эмблема 3","Эмблема 4"]],
+["146. Обеспечение равного доступа к образованию для всех обучающихся с учетом разнообразия особых образовательных потребностей и индивидуальных возможностей","Выбери термин.","Инклюзивное образование",["Дистанционное обучение","Инклюзивное образование","Дополнительное образование","Профессиональное обучение"]],
+["Физическое лицо, осваивающее образовательную программу","Выбери правильный термин.","Обучающийся",["Преподаватель","Абитуриент","Обучающийся","Куратор"]],
+["Плановые перерывы при получении образования для отдыха и иных социальных целей в соответствии с законодательством об образовании и календарным учебным графиком","Как называется такой перерыв?","Каникулы",["Практика","Каникулы","Сессия","Академический отпуск"]],
+["ФИО президента РФ","Выбери правильный ответ.","Путин Владимир Владимирович",["Медведев Дмитрий Анатольевич","Путин Владимир Владимирович","Мишустин Михаил Владимирович","Лавров Сергей Викторович"]],
+["Председатель первичной профсоюзной организации избирается сроком на 5 лет?","Выбери «да» или «нет».","Да",["Да","Нет"]],
+["Максимальный возраст участника программы «Пушкинская карта»","Выбери правильный ответ.","До 22 лет.",["До 18 лет.","До 22 лет.","До 25 лет.","До 30 лет."]],
+["Какой город был признан Молодежной столицей России-2026?","Выбери город.","Смоленск",["Пермь","Смоленск","Томск","Вологда"]],
+["Плата за пользование библиотекой","Сколько стоит пользоваться библиотекой?","0 рублей",["0 рублей","50 рублей","100 рублей","Зависит от книги"]]
+],N=["Разминка","Студенческий круг","Профсоюзный эксперт","Проверка знаний","Финальный бросок"];
+let i=0,score=0,answered=false,done=new Set();const $=x=>document.getElementById(x);
+function emblemSVG(n){const colors=[["#17364c","#e5b957"],["#7c2d43","#fff4d9"],["#367457","#f4d27c"],["#344f83","#f3f0e8"]];const c=colors[n%4];return `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 5 L85 18 L82 58 Q73 79 50 94 Q27 79 18 58 L15 18Z" fill="${c[0]}" stroke="${c[1]}" stroke-width="4"/><circle cx="50" cy="40" r="17" fill="none" stroke="${c[1]}" stroke-width="4"/><path d="M31 64 L69 64 M38 72 L62 72" stroke="${c[1]}" stroke-width="4" stroke-linecap="round"/><text x="50" y="47" text-anchor="middle" font-size="18" font-weight="bold" fill="${c[1]}">${["✦","★","⚙","✚"][n%4]}</text></svg>`}
+function render(){answered=false;let q=Q[i];$("kick").textContent=`Вопрос ${i+1} из ${Q.length} · ${N[Math.min(4,Math.floor(i/4))]}`;$("title").textContent=q[0];$("prompt").textContent=q[1];$("feedback").textContent="Выбери один ответ. За правильный начисляется ★.";$("feedback").style.color="var(--muted)";$("next").disabled=true;$("next").textContent=i===Q.length-1?"Посмотреть результат →":"Следующий вопрос →";$("answers").innerHTML="";q[3].forEach((a,j)=>{let b=document.createElement("button");b.className="answer";if(i===11){b.innerHTML=`<span class="emblem">${emblemSVG(j)}</span><span>${a} <small>(временный макет)</small></span>`}else b.textContent=String.fromCharCode(65+j)+". "+a;b.onclick=()=>choose(b,a);$("answers").appendChild(b)});ui()}
+function choose(btn,a){if(answered)return;answered=true;let correct=Q[i][2];[...$("answers").children].forEach((b,j)=>{b.disabled=true;if(Q[i][3][j]===correct)b.classList.add("correct")});if(a===correct){score++;done.add(i);$("feedback").textContent="Верно! Ты заработал(а) звезду. ★";$("feedback").style.color="var(--green)"}else{btn.classList.add("wrong");$("feedback").textContent="Без звезды в этот раз. Правильный ответ: "+correct;$("feedback").style.color="var(--red)"}$("next").disabled=false;ui()}
+function ui(){$("score").textContent=score;$("progress").textContent=(i+(answered?1:0))+"/"+Q.length;$("stars").innerHTML=Q.map((_,j)=>`<span class="${j<score?'lit':''}">${j<score?'★':'☆'}</span>`).join(" ");document.querySelectorAll(".tile").forEach((t,j)=>{t.classList.toggle("active",j===i);t.classList.toggle("done",done.has(j));let p=t.querySelector(".pawn");if(j===i&&!p){p=document.createElement("span");p.className="pawn";p.setAttribute("aria-hidden","true");p.textContent="♟️";t.prepend(p)}else if(j!==i&&p){p.remove()}})}
+function next(){if(!answered)return;if(i<Q.length-1){i++;render()}else{$("game").style.display="none";$("end").style.display="block";$("result").textContent=`Твой результат: ${score} из ${Q.length} звёзд. `+(score===Q.length?"Идеально! Ты настоящий знаток профсоюзной команды.":score>=Math.ceil(Q.length*.6)?"Отличный результат! Сыграй ещё раз, чтобы собрать все звёзды.":"Маршрут пройден! Теперь ты знаешь больше — попробуй ещё раз.");$("endstars").textContent="★ ".repeat(score)+"☆ ".repeat(Q.length-score)}}
+function reset(){i=0;score=0;answered=false;done=new Set();$("game").style.display="grid";$("end").style.display="none";render()}
+$("next").onclick=next;$("reset").onclick=reset;$("again").onclick=reset;document.querySelectorAll(".tile").forEach(t=>t.onclick=()=>{let n=+t.dataset.l;if(n<=i){i=n;render()}});
+$("qrbtn").onclick=()=>{let u=$("url").value.trim();if(!u)u=location.href;if(!/^https?:\/\//i.test(u)||u.startsWith("file:")){$("qrnote").textContent="Сначала опубликуй сайт и вставь общедоступную ссылку https://…";$("qr").hidden=true;return}$("qr").src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data="+encodeURIComponent(u);$("qr").hidden=false;$("qrnote").textContent="Готово! Проверь QR-код камерой телефона."};render();</script></body></html>
